@@ -58,31 +58,16 @@ pipeline {
                         jmeterCmd = "${env.JMETER_HOME_UNIX}/bin/jmeter"
                     }
 
-                    // Cleanup old results
+                    // Cleanup
                     if (isWindows) {
                         bat "del /F /Q results.jtl 2>nul"
                         bat "rmdir /S /Q reports 2>nul"
-                    } else {
-                        sh "rm -f results.jtl"
-                        sh "rm -rf reports"
                     }
 
-                    // Execute JMeter with auto-detected JMX file
-                    if (isWindows) {
-                        bat """
-                        ${jmeterCmd} -n ^
-                          -t "${env.JMX_FILE}" ^
-                          -l results.jtl ^
-                          -e -o reports
-                        """
-                    } else {
-                        sh """
-                        ${jmeterCmd} -n \\
-                          -t "${env.JMX_FILE}" \\
-                          -l results.jtl \\
-                          -e -o reports
-                        """
-                    }
+                    // ⭐ JMeter 실행 한 줄로 고정
+                    bat """
+        ${jmeterCmd} -n -t "${env.JMX_FILE}" -l results.jtl -e -o reports
+        """
                 }
             }
         }
